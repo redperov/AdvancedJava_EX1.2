@@ -11,6 +11,10 @@ public class Main {
         receiveUserInput(frame);
     }
 
+    /**
+     * Receives input from the user and plots it on the graph.
+     * @param frame holds the plotted graph
+     */
     private static void receiveUserInput(WeatherFrame frame) {
         String userInput;
         int previouslyChosenYear = Integer.MIN_VALUE;
@@ -18,12 +22,10 @@ public class Main {
         Integer[] temperatures;
 
         while (true) {
-
-            // TODO handle user closing the window with "X" and other exiting options
             userInput = JOptionPane.showInputDialog("Choose a year:");
 
             // If the user entered an empty string, stop asking for input
-            if (userInput.equals("")) {
+            if ( userInput == null || userInput.equals("")) {
                 break;
             }
 

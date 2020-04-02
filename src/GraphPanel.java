@@ -8,6 +8,8 @@ public class GraphPanel extends JPanel {
     private static final int Y_AXIS_STARTING_X = 50;
     private static final int Y_AXIS_STARTING_Y = 50;
     private static final int Y_AXIS_LENGTH = 900;
+    private static final int TEMPERATURE_GAP_SIZE = 5;
+    private static final int TEMPERATURE_RANGE = 45;
 
     // X axis parameters
     private static final int X_AXIS_STARTING_X = Y_AXIS_STARTING_X;
@@ -18,8 +20,10 @@ public class GraphPanel extends JPanel {
     private static final int AXIS_PADDING = 20;
     private static final int RECTANGLE_HEIGHT_MULTIPLIER = 10;
     private static final int RECTANGLE_WIDTH = 11;
+    private static final int DISPLAY_YEAR_FONT_SIZE = 18;
 
     private int[] rectanglesXCoordinates;
+    private int[] temperaturesYCoordinates;
     private Integer[] temperatures;
     private boolean isFirstDisplay;
     private Integer previousYear;
@@ -30,10 +34,12 @@ public class GraphPanel extends JPanel {
         setPreferredSize(size);
 
         this.isFirstDisplay         = true;
+        this.temperaturesYCoordinates = new int[(TEMPERATURE_RANGE / TEMPERATURE_GAP_SIZE) * 2 + 1];
         this.rectanglesXCoordinates = new int[NUM_OF_RECTANGLES];
         this.temperatures           = new Integer[NUM_OF_RECTANGLES];
         Arrays.fill(this.temperatures, 0);
 
+        calculateTemperatureYCoordinates();
         calculateRectanglesXCoordinates();
     }
 
@@ -53,14 +59,24 @@ public class GraphPanel extends JPanel {
         super.paintComponent(g);
 
         // Draw current year
-        g.drawString(String.format("Showing data for: %s", this.previousYear),
+        String displayYear = "No year chosen";
+
+        if (this.previousYear != null) {
+            displayYear = this.previousYear.toString();
+        }
+        Font previousFont = g.getFont();
+        g.setFont(new Font(previousFont.getFontName(), Font.PLAIN, DISPLAY_YEAR_FONT_SIZE));
+        g.drawString(String.format("Showing data for: %s", displayYear),
                 this.getWidth() / 2, AXIS_PADDING);
+        g.setFont(previousFont);
 
         // Draw y axis
-        g.drawLine(Y_AXIS_STARTING_X, Y_AXIS_STARTING_Y,
+        g.drawString("Temperature", Y_AXIS_STARTING_X - AXIS_PADDING, Y_AXIS_STARTING_Y - AXIS_PADDING);
+        g.drawLine(Y_AXIS_STARTING_X, Y_AXIS_STARTING_Y - RECTANGLE_HEIGHT_MULTIPLIER,
                 Y_AXIS_STARTING_X, Y_AXIS_STARTING_Y + Y_AXIS_LENGTH);
 
         // Draw x axis
+        g.drawString("Month", X_AXIS_STARTING_X + X_AXIS_LENGTH + AXIS_PADDING, X_AXIS_STARTING_Y);
         g.drawLine(X_AXIS_STARTING_X, X_AXIS_STARTING_Y,
                 X_AXIS_STARTING_X + X_AXIS_LENGTH, X_AXIS_STARTING_Y);
 
@@ -68,14 +84,25 @@ public class GraphPanel extends JPanel {
     }
 
     /**
+     * Calculate the y coordinates at which the temperature values will be drawn.
+     */
+    private void calculateTemperatureYCoordinates() {
+        this.temperaturesYCoordinates[0] = TEMPERATURE_RANGE;
+
+        for (int i = 1; i < this.temperaturesYCoordinates.length; i++) {
+            this.temperaturesYCoordinates[i] = this.temperaturesYCoordinates[i - 1] - TEMPERATURE_GAP_SIZE;
+        }
+    }
+
+    /**
      * Calculate the x coordinates at which the rectangles will be drawn.
      */
     private void calculateRectanglesXCoordinates() {
         int xCoordinateGapSize    = X_AXIS_LENGTH / rectanglesXCoordinates.length;
-        rectanglesXCoordinates[0] = X_AXIS_STARTING_X + AXIS_PADDING;
+        this.rectanglesXCoordinates[0] = X_AXIS_STARTING_X + AXIS_PADDING;
 
-        for (int i = 1; i < rectanglesXCoordinates.length; i++) {
-            rectanglesXCoordinates[i] = rectanglesXCoordinates[i - 1] + xCoordinateGapSize;
+        for (int i = 1; i < this.rectanglesXCoordinates.length; i++) {
+            this.rectanglesXCoordinates[i] = this.rectanglesXCoordinates[i - 1] + xCoordinateGapSize;
         }
     }
 
@@ -88,10 +115,6 @@ public class GraphPanel extends JPanel {
 
             // Draw the indexes of the x axis
             g.drawString(String.valueOf(i + 1), rectanglesXCoordinates[i], X_AXIS_STARTING_Y + AXIS_PADDING);
-
-            // Draw the indexes of the Y axis
-            g.drawString(String.valueOf(temperatures[i]), Y_AXIS_STARTING_X - AXIS_PADDING,
-                    X_AXIS_STARTING_Y + RECTANGLE_HEIGHT_MULTIPLIER * -temperatures[i]);
 
             if (temperatures[i].equals(maxTemperature) && !this.isFirstDisplay) {
                 g.setColor(Color.RED);
@@ -108,6 +131,12 @@ public class GraphPanel extends JPanel {
 
             // Return to the original color
             g.setColor(Color.BLACK);
+        }
+
+        for (int i = 0; i < this.temperaturesYCoordinates.length; i++) {
+            // Draw the indexes of the Y axis
+            g.drawString(String.valueOf(temperaturesYCoordinates[i]), Y_AXIS_STARTING_X - AXIS_PADDING,
+                    X_AXIS_STARTING_Y - temperaturesYCoordinates[i] * RECTANGLE_HEIGHT_MULTIPLIER);
         }
     }
 
