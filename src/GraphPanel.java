@@ -2,6 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 
+/**
+ * Represents a panel which contains a temperatures graph.
+ */
 public class GraphPanel extends JPanel {
 
     // Y axis parameters
@@ -16,18 +19,23 @@ public class GraphPanel extends JPanel {
     private static final int X_AXIS_STARTING_Y = Y_AXIS_STARTING_X + (Y_AXIS_LENGTH / 2);
     private static final int X_AXIS_LENGTH = 900;
 
+    // General parameters
     private static final int NUM_OF_RECTANGLES = 12;
     private static final int AXIS_PADDING = 20;
     private static final int RECTANGLE_HEIGHT_MULTIPLIER = 10;
     private static final int RECTANGLE_WIDTH = 11;
     private static final int DISPLAY_YEAR_FONT_SIZE = 18;
 
+    // Data members
     private int[] rectanglesXCoordinates;
     private int[] temperaturesYCoordinates;
     private Integer[] temperatures;
     private boolean isFirstDisplay;
     private Integer previousYear;
 
+    /**
+     * Constructor.
+     */
     public GraphPanel() {
         Dimension size  = getPreferredSize();
         size.height     = 500;
@@ -43,6 +51,11 @@ public class GraphPanel extends JPanel {
         calculateRectanglesXCoordinates();
     }
 
+    /**
+     * Plots the graph.
+     * @param temperatures temperatures values
+     * @param year corresponding year for the temperatures
+     */
     public void plotTemperatures(Integer[] temperatures, Integer year) {
         this.temperatures   = temperatures;
         this.isFirstDisplay = false;
@@ -106,6 +119,10 @@ public class GraphPanel extends JPanel {
         }
     }
 
+    /**
+     * Draws the temperatures rectangles in the graph.
+     * @param g graphics
+     */
     private void drawRectangles(Graphics g) {
 
         Integer maxTemperature = findMaxTemperature(temperatures);
@@ -133,13 +150,18 @@ public class GraphPanel extends JPanel {
             g.setColor(Color.BLACK);
         }
 
-        for (int i = 0; i < this.temperaturesYCoordinates.length; i++) {
+        for (int temperaturesYCoordinate : this.temperaturesYCoordinates) {
             // Draw the indexes of the Y axis
-            g.drawString(String.valueOf(temperaturesYCoordinates[i]), Y_AXIS_STARTING_X - AXIS_PADDING,
-                    X_AXIS_STARTING_Y - temperaturesYCoordinates[i] * RECTANGLE_HEIGHT_MULTIPLIER);
+            g.drawString(String.valueOf(temperaturesYCoordinate), Y_AXIS_STARTING_X - AXIS_PADDING,
+                    X_AXIS_STARTING_Y - temperaturesYCoordinate * RECTANGLE_HEIGHT_MULTIPLIER);
         }
     }
 
+    /**
+     * Finds the max temperature.
+     * @param temperatures temperatures to search max value at
+     * @return max temperature
+     */
     private int findMaxTemperature(Integer[] temperatures) {
         int currentMaxTemperature = temperatures[0];
 
@@ -153,6 +175,11 @@ public class GraphPanel extends JPanel {
         return currentMaxTemperature;
     }
 
+    /**
+     * Finds the min temperature.
+     * @param temperatures temperatures to search min value at
+     * @return min temperature
+     */
     private int findMinTemperature(Integer[] temperatures) {
         int currentMinTemperature = temperatures[0];
 

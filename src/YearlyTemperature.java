@@ -1,6 +1,9 @@
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Holds the average temperatures for different years.
+ */
 public class YearlyTemperature {
     private static final Integer[] year2019 = {-25, -17, -7, -4, 5, 8, 13, 20, 22, 34, 30, 28};
     private static final Integer[] year2018 = {-15, -20, -4, -2, 3, 7, 15, 18, 30, 27, 25, 20};
@@ -17,6 +20,11 @@ public class YearlyTemperature {
         yearlyTemperatures.put(2015, year2015);
     }
 
+    /**
+     * Returns the average temperatures according to the given year.
+     * @param year year to search temperatures for
+     * @return temperatures array
+     */
     public static Integer[] getTemperature(int year) {
         if (yearlyTemperatures.containsKey(year)) {
             return yearlyTemperatures.get(year);
