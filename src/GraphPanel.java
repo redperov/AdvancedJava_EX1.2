@@ -72,7 +72,7 @@ public class GraphPanel extends JPanel {
         super.paintComponent(g);
 
         // Draw current year
-        String displayYear = "No year chosen";
+        String displayYear = "No chosen year";
 
         if (this.previousYear != null) {
             displayYear = this.previousYear.toString();
