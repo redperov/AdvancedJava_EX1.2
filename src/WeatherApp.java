@@ -1,5 +1,8 @@
 import javax.swing.*;
 
+/**
+ * Represents the GUI of the weather app.
+ */
 public class WeatherApp {
     private WeatherFrame frame;
 
